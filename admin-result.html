@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты тестов | Дашборд</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-base-100 min-h-screen">
+    <div class="p-6 max-w-7xl mx-auto">
+        <!-- Заголовок и фильтры -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <h1 class="text-2xl font-bold">Результаты тестов</h1>
+            
+            <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+                <select class="select select-bordered w-full md:w-48">
+                    <option disabled selected>Все тесты</option>
+                    <option>Эмоциональный интеллект</option>
+                    <option>Управленческий потенциал</option>
+                    <option>Стрессоустойчивость</option>
+                </select>
+                
+                <input type="date" class="input input-bordered w-full md:w-48">
+                
+                <select class="select select-bordered w-full md:w-48">
+                    <option disabled selected>Все стили</option>
+                    <option>Аналитический</option>
+                    <option>Эмоциональный</option>
+                    <option>Практический</option>
+                </select>
+                
+                <button class="btn btn-accent" onclick="filterResults()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Применить
+                </button>
+            </div>
+        </div>
+
+        <!-- Виджеты статистики -->
+        <div class="stats stats-vertical md:stats-horizontal shadow bg-base-200 mb-6">
+            <div class="stat">
+                <div class="stat-figure text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <div class="stat-title">Завершённых тестов</div>
+                <div class="stat-value text-primary">1,248</div>
+                <div class="stat-desc">+12% за месяц</div>
+            </div>
+            
+            <div class="stat">
+                <div class="stat-figure text-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                </div>
+                <div class="stat-title">Средняя точность</div>
+                <div class="stat-value text-secondary">78.5%</div>
+                <div class="stat-desc">↗︎ 3.2% за месяц</div>
+            </div>
+            
+            <div class="stat">
+                <div class="stat-figure text-accent">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                </div>
+                <div class="stat-title">Самый популярный</div>
+                <div class="stat-value text-accent">ЭИ</div>
+                <div class="stat-desc">Тест на эмоциональный интеллект</div>
+            </div>
+        </div>
+
+        <!-- Таблица результатов -->
+        <div class="table-container">
+            <table class="table table-zebra">
+                <thead>
+                    <tr>
+                        <th>Имя</th>
+                        <th>Email</th>
+                        <th>Дата прохождения</th>
+                        <th>Тест</th>
+                        <th>Точность</th>
+                        <th>Стиль</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Пагинация -->
+        <div class="flex justify-center mt-6">
+            <div class="join">
+                <button class="join-item btn">«</button>
+                <button class="join-item btn btn-active">1</button>
+                <button class="join-item btn">2</button>
+                <button class="join-item btn">3</button>
+                <button class="join-item btn">4</button>
+                <button class="join-item btn">»</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно с деталями результата -->
+    <dialog id="result-modal" class="modal">
+        <div class="modal-box max-w-5xl">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="font-bold text-lg">Результаты теста: Эмоциональный интеллект</h3>
+            <p class="py-2">Иван Петров | 12.05.2023 | Точность: 85%</p>
+            
+            <div class="divider"></div>
+            
+            <div class="tabs">
+                <a class="tab tab-lifted tab-active">Часть 1: Самосознание</a> 
+                <a class="tab tab-lifted">Часть 2: Саморегуляция</a>
+                <a class="tab tab-lifted">Часть 3: Мотивация</a>
+            </div>
+            
+            <div class="space-y-4 mt-4">
+                <div class="collapse collapse-plus bg-base-200">
+                    <input type="radio" name="my-accordion-3" checked="checked" /> 
+                    <div class="collapse-title text-lg font-medium">
+                        Вопрос 1: Как вы обычно реагируете на критику?
+                    </div>
+                    <div class="collapse-content"> 
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium">Выбранный ответ:</span>
+                                <span class="badge badge-outline">Анализирую и делаю выводы</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium">Наиболее эффективно:</span>
+                                <span class="badge badge-success">Анализирую и делаю выводы</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium">Наименее эффективно:</span>
+                                <span class="badge badge-error">Игнорирую</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="collapse collapse-plus bg-base-200">
+                    <input type="radio" name="my-accordion-3" /> 
+                    <div class="collapse-title text-lg font-medium">
+                        Вопрос 2: Как вы справляетесь со стрессом?
+                    </div>
+                    <div class="collapse-content"> 
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium">Выбранный ответ:</span>
+                                <span class="badge badge-outline">Использую техники релаксации</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium">Наиболее эффективно:</span>
+                                <span class="badge badge-success">Использую техники релаксации</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium">Наименее эффективно:</span>
+                                <span class="badge badge-error">Заедаю сладким</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="card bg-base-100 shadow">
+                <div class="card-body">
+                    <h4 class="card-title">Рекомендации</h4>
+                    <p>Иван демонстрирует высокий уровень эмоционального интеллекта, особенно в области самосознания. Рекомендуется продолжить развитие навыков эмпатии и межличностного общения через групповые тренинги. Также стоит обратить внимание на техники управления стрессом в долгосрочной перспективе.</p>
+                </div>
+            </div>
+            
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn btn-primary">Закрыть</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    <script>
+        // Инициализация темы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Можно добавить переключение тем
+            const themeToggle = document.createElement('div');
+            themeToggle.className = 'fixed bottom-4 right-4 z-50';
+            themeToggle.innerHTML = `
+                <div class="dropdown dropdown-top dropdown-end">
+                    <label tabindex="0" class="btn btn-circle btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                        </svg>
+                    </label>
+                    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><button onclick="document.documentElement.setAttribute('data-theme', 'light')">Светлая</button></li>
+                        <li><button onclick="document.documentElement.setAttribute('data-theme', 'dark')">Тёмная</button></li>
+                        <li><button onclick="document.documentElement.setAttribute('data-theme', 'lofi')">Lofi</button></li>
+                    </ul>
+                </div>
+            `;
+            document.body.appendChild(themeToggle);
+        });
+    </script>
+    <script src="admin-results.js"></script>
+</body>
+</html>

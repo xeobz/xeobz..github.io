@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Психологическое тестирование</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            @apply bg-base-100 text-base-content;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- Шапка -->
+        <header class="flex justify-between items-center mb-8">
+            <div class="text-xl font-bold">PsyTest</div>
+            <label class="swap swap-rotate">
+                <input type="checkbox" class="theme-controller" value="dark" />
+                <svg class="swap-on fill-current w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41Z"/></svg>
+                <svg class="swap-off fill-current w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+            </label>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="space-y-6">
+            <!-- Экран 1: Старт -->
+            <div id="screen-start" class="fade-in">
+                <div class="card bg-base-100 shadow-sm rounded-xl p-6">
+                    <div class="text-center mb-6">
+                        <h1 class="text-2xl font-bold mb-2">Тест управленческих компетенций</h1>
+                        <p class="text-base-content/70">Вы пройдёте тест из нескольких блоков. Ответы будут проанализированы автоматически.</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Ваше имя</span>
+                            </label>
+                            <input type="text" id="user-name" placeholder="Иван Иванов" class="input input-bordered w-full" required />
+                        </div>
+                        
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Email</span>
+                            </label>
+                            <input type="email" id="user-email" placeholder="ivan@example.com" class="input input-bordered w-full" required />
+                        </div>
+                        
+                        <button id="start-test" class="btn btn-primary w-full mt-4">
+                            Начать тест
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Экран 2: Инструкция -->
+            <div id="screen-instruction" class="hidden fade-in">
+                <div class="card bg-base-100 shadow-sm rounded-xl p-6">
+                    <div class="prose max-w-none">
+                        <h2 class="text-xl font-bold mb-4">Инструкция</h2>
+                        <p>Тест состоит из нескольких частей, в каждой из которых представлены управленческие ситуации.</p>
+                        <p class="mt-2">Для каждого вопроса:</p>
+                        <ul class="list-disc pl-5 mt-2">
+                            <li>Внимательно прочитайте описание ситуации</li>
+                            <li>Выберите <span class="badge badge-success">наиболее эффективное</span> действие</li>
+                            <li>Выберите <span class="badge badge-error">наименее эффективное</span> действие</li>
+                            <li>Один и тот же вариант не может быть выбран в обе категории</li>
+                        </ul>
+                    </div>
+                    
+                    <button id="start-part" class="btn btn-primary w-full mt-6">
+                        Приступить к первой части
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Экран 3: Вопрос -->
+            <div id="screen-question" class="hidden fade-in">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-sm font-medium">
+                        Часть <span id="current-part">1</span> — Вопрос <span id="current-question">1</span> из <span id="total-questions">4</span>
+                    </div>
+                    <div class="w-32 bg-base-200 rounded-full h-2">
+                        <div id="progress-bar" class="progress-bar bg-primary h-2 rounded-full" style="width: 25%"></div>
+                    </div>
+                </div>
+                
+                <div class="card bg-base-100 shadow-sm rounded-xl p-6 mb-4">
+                    <div class="prose max-w-none" id="question-text">
+                        <p>Вы руководите командой из 5 человек. Один из сотрудников постоянно опаздывает на 10-15 минут, что вызывает недовольство остальных членов команды. При этом качество его работы на высоком уровне. Как вы поступите?</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-3" id="options-container">
+                    <!-- Варианты будут добавляться динамически -->
+                </div>
+                
+                <button id="submit-answer" class="btn btn-primary w-full mt-6" disabled>
+                    Ответить
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Экран 4: Межблочный -->
+            <div id="screen-between" class="hidden fade-in">
+                <div class="card bg-base-100 shadow-sm rounded-xl p-6 text-center">
+                    <h2 class="text-xl font-bold mb-4">Вы завершили часть <span id="completed-part">1</span></h2>
+                    <p class="mb-6">Можете сделать паузу перед продолжением теста.</p>
+                    
+                    <button id="continue-test" class="btn btn-primary w-full">
+                        Продолжить
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Экран 5: Финал -->
+            <div id="screen-final" class="hidden fade-in">
+                <div class="card bg-base-100 shadow-sm rounded-xl p-6 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-success mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h2 class="text-2xl font-bold mb-2">Вы успешно прошли тест!</h2>
+                    <p class="mb-6 text-base-content/70">Результаты будут отправлены вашему HR-специалисту или наставнику.</p>
+                    
+                    <button id="finish-test" class="btn btn-outline w-full">
+                        Выйти
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Состояние теста
+        const testState = {
+            currentScreen: 'start',
+            userName: '',
+            userEmail: '',
+            currentPart: 1,
+            currentQuestion: 1,
+            totalQuestions: 4,
+            totalParts: 3,
+            selectedBest: null,
+            selectedWorst: null,
+            answers: [],
+            questions: [
+                {
+                    text: "Вы руководите командой из 5 человек. Один из сотрудников постоянно опаздывает на 10-15 минут, что вызывает недовольство остальных членов команды. При этом качество его работы на высоком уровне. Как вы поступите?",
+                    options: [
+                        "Публично сделать замечание на общем собрании, чтобы показать пример другим",
+                        "Поговорить с сотрудником наедине, выяснить причины опозданий и договориться о графике",
+                        "Игнорировать ситуацию, так как качество работы сотрудника высокое",
+                        "Перевести сотрудника на удалённую работу, если это возможно"
+                    ]
+                },
+                {
+                    text: "Ваш подчинённый допустил ошибку в важном проекте. Как вы поступите?",
+                    options: [
+                        "Сразу взять исправление ошибки на себя",
+                        "Поручить исправление другому сотруднику",
+                        "Обсудить ошибку с сотрудником и вместе найти решение",
+                        "Оставить ошибку без внимания, если она не критична"
+                    ]
+                },
+                // Другие вопросы...
+            ]
+        };
+
+        // Элементы интерфейса
+        const screens = {
+            start: document.getElementById('screen-start'),
+            instruction: document.getElementById('screen-instruction'),
+            question: document.getElementById('screen-question'),
+            between: document.getElementById('screen-between'),
+            final: document.getElementById('screen-final')
+        };
+
+        // Переключение экранов
+        function showScreen(screenName) {
+            Object.values(screens).forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            screens[screenName].classList.remove('hidden');
+            testState.currentScreen = screenName;
+        }
+
+        // Инициализация вопроса
+        function initQuestion() {
+            const question = testState.questions[testState.currentQuestion - 1];
+            
+            document.getElementById('current-part').textContent = testState.currentPart;
+            document.getElementById('current-question').textContent = testState.currentQuestion;
+            document.getElementById('total-questions').textContent = testState.totalQuestions;
+            document.getElementById('question-text').innerHTML = `<p>${question.text}</p>`;
+            
+            // Прогресс бар
+            const progress = (testState.currentQuestion / testState.totalQuestions) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            
+            // Очистка предыдущих вариантов
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            // Добавление новых вариантов
+            question.options.forEach((option, index) => {
+                const optionId = `option-${index}`;
+                
+                const optionElement = document.createElement('div');
+                optionElement.className = 'card bg-base-100 shadow-sm rounded-xl p-4';
+                optionElement.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div class="prose max-w-none">
+                            <p>${option}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button 
+                                id="${optionId}-best" 
+                                class="btn btn-sm ${testState.selectedBest === index ? 'btn-success' : 'btn-outline'}"
+                                onclick="selectOption(${index}, 'best')"
+                            >
+                                Наиболее
+                            </button>
+                            <button 
+                                id="${optionId}-worst" 
+                                class="btn btn-sm ${testState.selectedWorst === index ? 'btn-error' : 'btn-outline'}"
+                                onclick="selectOption(${index}, 'worst')"
+                            >
+                                Наименее
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Проверка, можно ли активировать кнопку "Ответить"
+            checkSubmitButton();
+        }
+
+        // Выбор варианта ответа
+        function selectOption(index, type) {
+            if (type === 'best') {
+                if (testState.selectedBest === index) {
+                    testState.selectedBest = null;
+                } else {
+                    testState.selectedBest = index;
+                    if (testState.selectedWorst === index) {
+                        testState.selectedWorst = null;
+                    }
+                }
+            } else {
+                if (testState.selectedWorst === index) {
+                    testState.selectedWorst = null;
+                } else {
+                    testState.selectedWorst = index;
+                    if (testState.selectedBest === index) {
+                        testState.selectedBest = null;
+                    }
+                }
+            }
+            
+            // Обновление кнопок
+            const buttons = document.querySelectorAll('[id^="option-"][id$="-best"], [id^="option-"][id$="-worst"]');
+            buttons.forEach(button => {
+                const [optionId, btnType] = button.id.split('-').slice(-2);
+                const optionIndex = parseInt(optionId.split('-')[1]);
+                
+                if (btnType === 'best') {
+                    button.className = `btn btn-sm ${testState.selectedBest === optionIndex ? 'btn-success' : 'btn-outline'}`;
+                } else {
+                    button.className = `btn btn-sm ${testState.selectedWorst === optionIndex ? 'btn-error' : 'btn-outline'}`;
+                }
+            });
+            
+            checkSubmitButton();
+        }
+
+        // Проверка кнопки "Ответить"
+        function checkSubmitButton() {
+            const submitButton = document.getElementById('submit-answer');
+            submitButton.disabled = !(testState.selectedBest !== null && testState.selectedWorst !== null && testState.selectedBest !== testState.selectedWorst);
+        }
+
+        // Обработчики событий
+        document.getElementById('start-test').addEventListener('click', () => {
+            const name = document.getElementById('user-name').value.trim();
+            const email = document.getElementById('user-email').value.trim();
+            
+            if (!name || !email) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+            
+            testState.userName = name;
+            testState.userEmail = email;
+            showScreen('instruction');
+        });
+        
+        document.getElementById('start-part').addEventListener('click', () => {
+            testState.currentQuestion = 1;
+            testState.selectedBest = null;
+            testState.selectedWorst = null;
+            initQuestion();
+            showScreen('question');
+        });
+        
+        document.getElementById('submit-answer').addEventListener('click', () => {
+            // Здесь должна быть логика сохранения ответа
+            const currentQ = testState.questions[testState.currentQuestion - 1];
+            testState.answers.push({
+              question: currentQ.text,
+              best: currentQ.options[testState.selectedBest],
+              worst: currentQ.options[testState.selectedWorst],
+              part: testState.currentPart
+            });
+
+            if (testState.currentQuestion < testState.totalQuestions) {
+                testState.currentQuestion++;
+                testState.selectedBest = null;
+                testState.selectedWorst = null;
+                initQuestion();
+            } else if (testState.currentPart < testState.totalParts) {
+                testState.currentPart++;
+                document.getElementById('completed-part').textContent = testState.currentPart - 1;
+                showScreen('between');
+            } else {
+                showScreen('final');
+            }
+        });
+        
+        document.getElementById('continue-test').addEventListener('click', () => {
+            testState.currentQuestion = 1;
+            testState.selectedBest = null;
+            testState.selectedWorst = null;
+            initQuestion();
+            showScreen('question');
+        });
+        
+        document.getElementById('finish-test').addEventListener('click', () => {
+            // Здесь может быть логика завершения теста
+            alert('Тест завершён. Спасибо за участие!');
+            fetch("https://your-api.onrender.com/api/submit", {
+              method: "POST",
+              ...
+            });
+            showScreen('start');
+            testState.answers = [];
+            testState.currentPart = 1;
+            testState.currentQuestion = 1;
+            const result = {
+              name: testState.userName,
+              email: testState.userEmail,
+              date: new Date().toISOString(),
+              answers: testState.answers
+            };
+
+            fetch("https://your-api.onrender.com/api/submit", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(result)
+            })
+            .then(res => res.json())
+            .then(data => {
+              alert("Результат отправлен");
+            })
+            .catch(err => {
+              console.error("Ошибка отправки:", err);
+              alert("Ошибка отправки результата");
+            });
+        });
+
+        // Переключение темы
+        document.querySelector('.theme-controller').addEventListener('change', (e) => {
+            document.documentElement.setAttribute('data-theme', e.target.checked ? 'dark' : 'light');
+        });
+
+        // Проверка системной темы
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.querySelector('.theme-controller').checked = true;
+        }
+    </script>
+</body>
+</html>

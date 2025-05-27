@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест-менеджер | Админ-панель</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .drag-handle {
+            cursor: move;
+        }
+        .question-item {
+            transition: all 0.2s ease;
+        }
+        .question-item:hover {
+            transform: translateY(-2px);
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-base-100 min-h-screen">
+    <!-- Mobile menu button -->
+    <div class="lg:hidden fixed top-4 left-4 z-50">
+        <label for="drawer-toggle" class="btn btn-square btn-ghost">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </label>
+    </div>
+
+    <!-- Drawer toggle -->
+    <input type="checkbox" id="drawer-toggle" class="drawer-toggle" />
+
+    <!-- Sidebar -->
+    <div class="sidebar fixed top-0 left-0 h-screen w-64 bg-base-200 shadow-lg z-40 p-4 flex flex-col">
+        <div class="flex items-center gap-2 mb-8">
+            <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                </svg>
+            </div>
+            <h1 class="text-xl font-bold">Тест-менеджер</h1>
+        </div>
+
+        <nav class="flex-1">
+            <ul class="menu gap-1">
+                <li>
+                    <a href="#all-tests" class="active">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Все тесты
+                    </a>
+                </li>
+                <li>
+                    <a href="#create-test">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Создать тест
+                    </a>
+                </li>
+                <li>
+                    <a href="#edit-test">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Редактировать тест
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="mt-auto">
+            <div class="divider"></div>
+            <div class="flex items-center gap-2">
+                <div class="avatar">
+                    <div class="w-8 rounded-full">
+                        <img src="https://i.pravatar.cc/150?img=3" />
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-medium">Администратор</p>
+                    <p class="text-xs opacity-70">admin@testmanager.com</p>
+                </div>
+                <button class="btn btn-ghost btn-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="ml-0 lg:ml-64 transition-all duration-300">
+        <!-- Top bar -->
+        <div class="navbar bg-base-100 shadow-sm sticky top-0 z-30">
+            <div class="flex-1">
+                <h2 class="text-xl font-semibold">Все тесты</h2>
+            </div>
+            <div class="flex-none gap-2">
+                <div class="dropdown dropdown-end">
+                    <label tabindex="0" class="btn btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                        </svg>
+                        <span class="hidden md:inline">Тема</span>
+                    </label>
+                    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><button data-set-theme="light" class="active">Светлая</button></li>
+                        <li><button data-set-theme="dark">Тёмная</button></li>
+                        <li><button data-set-theme="pastel">Пастель</button></li>
+                        <li><button data-set-theme="corporate">Корпоративная</button></li>
+                    </ul>
+                </div>
+                <button class="btn btn-ghost">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span class="hidden md:inline">Выйти</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Page content -->
+        <div class="p-6 max-w-7xl mx-auto">
+            <!-- All tests section -->
+            <section id="all-tests">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-medium">Доступные тесты</h3>
+                    <div class="join">
+                        <input type="text" placeholder="Поиск тестов..." class="input input-bordered join-item" />
+                        <button class="btn btn-accent join-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Test card 1 -->
+                    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="card-body">
+                            <div class="flex justify-between items-start">
+                                <h3 class="card-title">Тест на эмоциональный интеллект</h3>
+                                <div class="badge badge-accent badge-outline">Активен</div>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                                <span>5 блоков</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm opacity-70">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>Обновлено: 12.05.2023</span>
+                            </div>
+                            <div class="card-actions justify-end mt-4">
+                                <button class="btn btn-square btn-ghost btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                <button class="btn btn-square btn-ghost btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <button class="btn btn-square btn-ghost btn-sm text-error">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Test card 2 -->
+                    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="card-body">
+                            <div class="flex justify-between items-start">
+                                <h3 class="card-title">Управленческий потенциал</h3>
+                                <div class="badge badge-warning badge-outline">Черновик</div>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                                <span>3 блока</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm opacity-70">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>Обновлено: 28.04.2023</span>
+                            </div>
+                            <div class="card-actions justify-end mt-4">
+                                <button class="btn btn-square btn-ghost btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                <button class="btn btn-square btn-ghost btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <button class="btn btn-square btn-ghost btn-sm text-error">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Test card 3 -->
+                    <div class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="card-body">
+                            <div class="flex justify-between items-start">
+                                <h3 class="card-title">Стрессоустойчивость</h3>
+                                <div class="badge badge-neutral badge-outline">Архив</div>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                                <span>4 блока</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm opacity-70">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>Обновлено: 15.03.2023</span>
+                            </div>
+                            <div class="card-actions justify-end mt-4">
+                                <button class="btn btn-square btn-ghost btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                <button class="btn btn-square btn-ghost btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <button class="btn btn-square btn-ghost btn-sm text-error">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Create test section (hidden by default) -->
+            <section id="create-test" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-medium">Создание нового теста</h3>
+                    <button class="btn btn-accent" onclick="saveTestToMemory()">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Сохранить тест
+                    </button>
+                </div>
+
+                <div class="card bg-base-100 shadow-sm p-6">
+                    <div class="form-control mb-6">
+                        <label class="label">
+                            <span class="label-text">Название теста</span>
+                        </label>
+                        <input type="text" placeholder="Введите название теста" class="input input-bordered w-full" />
+                    </div>
+
+                    <div class="form-control mb-6">
+                        <label class="label">
+                            <span class="label-text">Инструкция к тесту</span>
+                        </label>
+                        <textarea class="textarea textarea-bordered h-32" placeholder="Опишите инструкцию для прохождения теста..."></textarea>
+                    </div>
+
+                    <div class="divider">Блоки теста</div>
+
+                    <!-- Test parts -->
+                    <div class="space-y-6">
+                        <!-- Part 1 -->
+                        <div class="card bg-base-200 p-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="form-control flex-1">
+                                    <label class="label">
+                                        <span class="label-text">Название блока</span>
+                                    </label>
+                                    <input type="text" placeholder="Блок 1" class="input input-bordered w-full" />
+                                </div>
+                                <button class="btn btn-square btn-ghost text-error">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Questions -->
+                            <div class="space-y-4">
+                                <!-- Question 1 -->
+                                <div class="question-item card bg-base-100 p-4 shadow-sm relative">
+                                    <div class="drag-handle absolute top-2 right-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                                        </svg>
+                                    </div>
+                                    <div class="form-control mb-4">
+                                        <label class="label">
+                                            <span class="label-text">Текст вопроса</span>
+                                        </label>
+                                        <textarea class="textarea textarea-bordered h-20" placeholder="Опишите ситуацию или вопрос..."></textarea>
+                                    </div>
+
+                                    <!-- Options -->
+                                    <div class="space-y-2">
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" placeholder="Вариант 1" class="input input-bordered flex-1" />
+                                            <label class="cursor-pointer label gap-2">
+                                                <span class="label-text text-success">Наиболее</span> 
+                                                <input type="checkbox" class="checkbox checkbox-success" />
+                                            </label>
+                                            <label class="cursor-pointer label gap-2">
+                                                <span class="label-text text-error">Наименее</span> 
+                                                <input type="checkbox" class="checkbox checkbox-error" />
+                                            </label>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" placeholder="Вариант 2" class="input input-bordered flex-1" />
+                                            <label class="cursor-pointer label gap-2">
+                                                <span class="label-text text-success">Наиболее</span> 
+                                                <input type="checkbox" class="checkbox checkbox-success" />
+                                            </label>
+                                            <label class="cursor-pointer label gap-2">
+                                                <span class="label-text text-error">Наименее</span> 
+                                                <input type="checkbox" class="checkbox checkbox-error" />
+                                            </label>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" placeholder="Вариант 3" class="input input-bordered flex-1" />
+                                            <label class="cursor-pointer label gap-2">
+                                                <span class="label-text text-success">Наиболее</span> 
+                                                <input type="checkbox" class="checkbox checkbox-success" />
+                                            </label>
+                                            <label class="cursor-pointer label gap-2">
+                                                <span class="label-text text-error">Наименее</span> 
+                                                <input type="checkbox" class="checkbox checkbox-error" />
+                                            </label>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" placeholder="Вариант 4" class="input input-bordered flex-1" />
+                                            <label class="cursor-pointer label gap-2">
+                                                <span class="label-text text-success">Наиболее</span> 
+                                                <input type="checkbox" class="checkbox checkbox-success" />
+                                            </label>
+                                            <label class="cursor-pointer label gap-2">
+                                                <span class="label-text text-error">Наименее</span> 
+                                                <input type="checkbox" class="checkbox checkbox-error" />
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-end mt-4">
+                                        <button class="btn btn-ghost btn-sm text-error">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                            Удалить вопрос
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Add question button -->
+                                <button class="btn btn-ghost btn-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                    Добавить вопрос
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Add part button -->
+                        <button class="btn btn-outline btn-block">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            Добавить блок
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <button onclick="sendTestToServer()" class="btn btn-accent">Сохранить тест на сервер</button>
+        <button onclick="sendTestToServer()" class="btn btn-accent">Сохранить тест</button>
+        <button onclick="exportTestsToJson()" class="btn btn-outline">Экспорт в JSON</button>
+    </div>
+
+    <script>
+        // Toggle mobile menu
+        document.getElementById('drawer-toggle').addEventListener('change', function() {
+            document.querySelector('.sidebar').classList.toggle('open');
+        });
+
+        // Theme switcher
+        document.querySelectorAll('[data-set-theme]').forEach(button => {
+            button.addEventListener('click', function() {
+                const theme = this.getAttribute('data-set-theme');
+                document.documentElement.setAttribute('data-theme', theme);
+                
+                // Update active state
+                document.querySelectorAll('[data-set-theme]').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+
+        // Simple drag and drop simulation (visual only)
+        const questionItems = document.querySelectorAll('.question-item');
+        questionItems.forEach(item => {
+            const handle = item.querySelector('.drag-handle');
+            
+            handle.addEventListener('mousedown', function() {
+                item.classList.add('ring-2', 'ring-accent', 'bg-base-200');
+            });
+            
+            handle.addEventListener('mouseup', function() {
+                item.classList.remove('ring-2', 'ring-accent', 'bg-base-200');
+            });
+            
+            handle.addEventListener('mouseleave', function() {
+                item.classList.remove('ring-2', 'ring-accent', 'bg-base-200');
+            });
+        });
+
+
+        // Tab switching
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Hide all sections
+                document.querySelectorAll('section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                // Show selected section
+                const target = this.getAttribute('href');
+                document.querySelector(target).classList.remove('hidden');
+                
+                // Update active state
+                document.querySelectorAll('nav a').forEach(a => {
+                    a.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+
+    </script>
+    <script src="admin-backend.js"></script>
+</body>
+</html>
